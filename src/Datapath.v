@@ -1,3 +1,5 @@
+`include "PC.v"
+
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
   output wire [63:0]nextPC, ALUResult; // Alterar tamanho da instrucao ao imprimir
@@ -9,5 +11,13 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   wire ALUSrc, MemtoReg, MemWrite, MemRead, RegWrite, Branch;  // instrucoes de controle
   wire [1:0]ALUOp; // instrucoes de controle
   wire [3:0]ALUCtrl; 
+  
+  //-----------------------------------------------------------------
+  // Program Counter Modules
+  //-----------------------------------------------------------------
+  PC PC (.PC(nextPC), .shiftValue(shiftValue), .sum(nextPC), .ANDBranch(1'b0), .clk(clk));
+  ShiftLeft ImmShiftedOneLeft (.signExtend(signExtend), .result(shiftValue));
+  BranchAND BranchAND(.Zero(Zero), .Branch(Branch), .ANDResult(ANDResult));
+  
   
 endmodule
