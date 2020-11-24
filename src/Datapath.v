@@ -1,4 +1,5 @@
 `include "PC.v"
+`include "SignExtend.v"
 
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
@@ -18,6 +19,9 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   PC PC (.PC(nextPC), .shiftValue(shiftValue), .sum(nextPC), .ANDBranch(1'b0), .clk(clk));
   ShiftLeft ImmShiftedOneLeft (.signExtend(signExtend), .result(shiftValue));
   BranchAND BranchAND(.Zero(Zero), .Branch(Branch), .ANDResult(ANDResult));
-  
+  //-----------------------------------------------------------------
+  // SingExtend Modules
+  //-----------------------------------------------------------------
+  SignExtend ImmGen (.OpCode(instruction[6:0]), .instruction(instruction[31:0]), .signExtend(signExtend));
   
 endmodule
