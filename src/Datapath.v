@@ -1,5 +1,6 @@
 `include "PC.v"
 `include "SignExtend.v"
+`include "InstructionMemory.v"
 
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
@@ -9,8 +10,8 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   wire [63:0]signExtend, ReadData1, ReadData2, DataTemp, WriteData, shiftValue, ReadData, PC;
   wire [4:0]WriteReg;
   wire ANDBranch, Zero, ANDResult;
-  wire ALUSrc, MemtoReg, MemWrite, MemRead, RegWrite, Branch;  // instrucoes de controle
-  wire [1:0]ALUOp; // instrucoes de controle
+  wire ALUSrc, MemtoReg, MemWrite, MemRead, RegWrite, Branch;  // control instructions
+  wire [1:0]ALUOp; // control instruction
   wire [3:0]ALUCtrl; 
   
   //-----------------------------------------------------------------
@@ -23,5 +24,9 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   // SingExtend Modules
   //-----------------------------------------------------------------
   SignExtend ImmGen (.OpCode(instruction[6:0]), .instruction(instruction[31:0]), .signExtend(signExtend));
+  //-----------------------------------------------------------------
+  // Memory Instruction Modules
+  //-----------------------------------------------------------------
+  InstructionMemory InstructionMemory (.PC(nextPC), .instruction(instruction));
   
 endmodule
