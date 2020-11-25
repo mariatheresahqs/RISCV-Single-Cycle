@@ -1,6 +1,7 @@
 `include "PC.v"
 `include "SignExtend.v"
 `include "InstructionMemory.v"
+`include "Control.v"
 
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
@@ -28,5 +29,9 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   // Memory Instruction Modules
   //-----------------------------------------------------------------
   InstructionMemory InstructionMemory (.PC(nextPC), .instruction(instruction));
+   //-----------------------------------------------------------------
+  // Control Modules
+  //-----------------------------------------------------------------
+  Control Control_Values (.OpCode(instruction[6:0]), .ALUSrc(ALUSrc), .MemtoReg(MemtoReg), .RegWrite(RegWrite), .MemRead(MemRead), .MemWrite(MemWrite), .Branch(Branch), .ALUOp(ALUOp));
   
 endmodule
