@@ -2,6 +2,7 @@
 `include "SignExtend.v"
 `include "InstructionMemory.v"
 `include "Control.v"
+`include "Registers.v"
 
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
@@ -33,5 +34,9 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   // Control Modules
   //-----------------------------------------------------------------
   Control Control_Values (.OpCode(instruction[6:0]), .ALUSrc(ALUSrc), .MemtoReg(MemtoReg), .RegWrite(RegWrite), .MemRead(MemRead), .MemWrite(MemWrite), .Branch(Branch), .ALUOp(ALUOp));
+  //-----------------------------------------------------------------
+  // Registers Modules
+  //-----------------------------------------------------------------
+  Registers Regs (.ReadReg1(instruction[19:15]), .ReadReg2(instruction[24:20]), .RegWrite(instruction[11:7]), .ReadData1(ReadData1), .ReadData2(ReadData2), .WriteReg(RegWrite), .WriteData(muxDataResult), .clk(clk), .reset(reset));
   
 endmodule
