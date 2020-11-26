@@ -1,8 +1,11 @@
-`include "PC.v"
-`include "SignExtend.v"
-`include "InstructionMemory.v"
+`include "ALU.v"
+`include "ALUControl.v"
 `include "Control.v"
+`include "InstructionMemory.v"
+`include "PC.v"
 `include "Registers.v"
+`include "SignExtend.v"
+
 
 module datapath (clk, reset, nextPC, ALUResult, instruction);
   input wire clk, reset;
@@ -19,7 +22,7 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   //-----------------------------------------------------------------
   // Program Counter Modules
   //-----------------------------------------------------------------
-  PC PC (.PC(nextPC), .shiftValue(shiftValue), .sum(nextPC), .ANDBranch(1'b0), .clk(clk));
+  PC PC (.PC(nextPC), .shiftValue(shiftValue), .sum(nextPC), .ANDBranch(Branch), .clk(clk));
   ShiftLeft ImmShiftedOneLeft (.signExtend(signExtend), .result(shiftValue));
   BranchAND BranchAND(.Zero(Zero), .Branch(Branch), .ANDResult(ANDResult));
   //-----------------------------------------------------------------
@@ -38,5 +41,11 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   // Registers Modules
   //-----------------------------------------------------------------
   Registers Regs (.ReadReg1(instruction[19:15]), .ReadReg2(instruction[24:20]), .RegWrite(instruction[11:7]), .ReadData1(ReadData1), .ReadData2(ReadData2), .WriteReg(RegWrite), .WriteData(muxDataResult), .clk(clk), .reset(reset));
+  //-----------------------------------------------------------------
+  // ALU Modules
+  //-----------------------------------------------------------------
+  ALUValues ALUValues (.ReadData1(ReadData1), .muxResult(muxResult), .ALUCtrl(ALUCtrl), .ALUResult(ALUResult), .Zero(Zero));
+  ALUControl ALUControl (.Funct7(instruction[31:25]), .Funct3(instruction[14:12]), .ALUOp(ALUOp), .ALUCtrl(ALUCtrl));
+  muxALU muxALU(.ReadData2(ReadData2), .signExtend(signExtend), .ALUSrc(ALUSrc), .muxResult(muxResult));
   
 endmodule
