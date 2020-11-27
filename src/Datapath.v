@@ -1,6 +1,7 @@
 `include "ALU.v"
 `include "ALUControl.v"
 `include "Control.v"
+`include "DataMemory.v"
 `include "InstructionMemory.v"
 `include "PC.v"
 `include "Registers.v"
@@ -47,5 +48,10 @@ module datapath (clk, reset, nextPC, ALUResult, instruction);
   ALUValues ALUValues (.ReadData1(ReadData1), .muxResult(muxResult), .ALUCtrl(ALUCtrl), .ALUResult(ALUResult), .Zero(Zero));
   ALUControl ALUControl (.Funct7(instruction[31:25]), .Funct3(instruction[14:12]), .ALUOp(ALUOp), .ALUCtrl(ALUCtrl));
   muxALU muxALU(.ReadData2(ReadData2), .signExtend(signExtend), .ALUSrc(ALUSrc), .muxResult(muxResult));
+  //-----------------------------------------------------------------
+  // Data Memory
+  //-----------------------------------------------------------------
+  DataMemory DataMemory(.ALUResult(ALUResult), .ReadData2(ReadData2), .MemWrite(MemWrite), .MemRead(MemRead), .ReadData(ReadData), .clk(clk), .reset(reset));
+  muxDataMem muxDataMem(.ReadData(ReadData), .ALUResult(ALUResult), .MemtoReg(MemtoReg), .muxDataResult(muxDataResult));
   
 endmodule
